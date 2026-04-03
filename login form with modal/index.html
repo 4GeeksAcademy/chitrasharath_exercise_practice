@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Hello World - Home</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              brand: {
+                50: "#f5fbf7",
+                100: "#dff3e7",
+                500: "#2f9e65",
+                700: "#1f6e45",
+                900: "#103822"
+              }
+            },
+            fontFamily: {
+              display: ["ui-rounded", "system-ui", "sans-serif"]
+            }
+          }
+        }
+      };
+    </script>
+  </head>
+  <body class="min-h-screen bg-gradient-to-b from-brand-50 via-white to-emerald-100 text-slate-900">
+    <div class="relative min-h-screen overflow-hidden">
+      <div class="pointer-events-none absolute -left-24 top-16 h-64 w-64 rounded-full bg-brand-100 blur-3xl"></div>
+      <div class="pointer-events-none absolute -right-20 bottom-16 h-72 w-72 rounded-full bg-emerald-200 blur-3xl"></div>
+
+      <header class="relative z-10 flex items-center justify-between px-4 py-4 sm:px-6">
+        <h1 class="font-display text-xl font-bold tracking-tight text-brand-900">Hello world</h1>
+        <div class="flex items-center gap-2">
+          <a
+            id="profileLoginLink"
+            href="login.html"
+            class="inline-flex items-center gap-2 rounded-lg bg-brand-700 px-4 py-2 text-sm font-semibold text-white shadow-md shadow-brand-700/25 transition hover:bg-brand-900 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-2"
+            aria-label="Profile login"
+          >
+            <span id="profileText">Profile Login</span>
+          </a>
+          <button
+            id="logoutButton"
+            type="button"
+            class="hidden rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-semibold text-slate-700 shadow-sm transition hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-2"
+            aria-label="Logout"
+          >
+            Logout
+          </button>
+        </div>
+      </header>
+
+      <main class="relative z-10 mx-auto max-w-3xl px-4 py-16 sm:px-6">
+        <section class="rounded-2xl border border-emerald-100 bg-white/80 p-8 shadow-lg shadow-emerald-100/70 backdrop-blur-sm sm:p-10">
+          <p class="font-display text-3xl font-black leading-tight text-slate-800 sm:text-4xl">Hello world</p>
+          <p class="mt-3 max-w-prose text-sm leading-relaxed text-slate-600 sm:text-base">
+            This is a dummy home page. Use the profile area in the top-right corner to sign in.
+          </p>
+        </section>
+      </main>
+    </div>
+
+    <script>
+      const profileLoginLink = document.getElementById("profileLoginLink");
+      const profileText = document.getElementById("profileText");
+      const logoutButton = document.getElementById("logoutButton");
+      const savedEmail = localStorage.getItem("profileEmail");
+
+      if (savedEmail) {
+        const avatar = document.createElement("span");
+        avatar.className = "inline-flex h-7 w-7 items-center justify-center rounded-full bg-white/20 text-xs font-bold uppercase";
+        avatar.setAttribute("aria-hidden", "true");
+        avatar.textContent = savedEmail.charAt(0);
+
+        profileText.textContent = savedEmail;
+        profileLoginLink.insertBefore(avatar, profileText);
+        profileLoginLink.setAttribute("aria-label", `Logged in as ${savedEmail}`);
+        profileLoginLink.removeAttribute("href");
+        profileLoginLink.setAttribute("aria-disabled", "true");
+        profileLoginLink.setAttribute("tabindex", "-1");
+        profileLoginLink.classList.add("cursor-default", "pointer-events-none", "bg-slate-700", "hover:bg-slate-700");
+
+        logoutButton.classList.remove("hidden");
+      }
+
+      logoutButton.addEventListener("click", () => {
+        localStorage.removeItem("profileEmail");
+        window.location.href = "index.html";
+      });
+    </script>
+
+  </body>
+</html>

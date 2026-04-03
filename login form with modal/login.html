@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Profile Login</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              brand: {
+                50: "#f5fbf7",
+                100: "#dff3e7",
+                500: "#2f9e65",
+                700: "#1f6e45",
+                900: "#103822"
+              }
+            },
+            fontFamily: {
+              display: ["ui-rounded", "system-ui", "sans-serif"]
+            }
+          }
+        }
+      };
+    </script>
+  </head>
+  <body class="min-h-screen bg-gradient-to-b from-brand-50 via-white to-emerald-100 text-slate-900">
+    <main class="mx-auto w-full max-w-md px-4 py-10 sm:py-16">
+      <a
+        href="index.html"
+        class="inline-flex items-center text-sm font-semibold text-brand-700 underline decoration-2 underline-offset-2 hover:text-brand-900 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-2"
+      >
+        Back to home
+      </a>
+
+      <section class="mt-5 rounded-2xl border border-emerald-100 bg-white p-5 shadow-xl shadow-emerald-100/70 sm:p-6">
+        <h1 class="font-display text-2xl font-bold text-slate-900">Profile Login</h1>
+        <p class="mt-1 text-sm text-slate-600">Enter your email and password.</p>
+
+        <div id="formSummary" class="mt-4 hidden rounded-lg border border-red-300 bg-red-50 p-3" role="alert" aria-live="assertive" tabindex="-1">
+          <p class="text-sm font-semibold text-red-800">Please fix the following errors:</p>
+          <ul id="summaryList" class="mt-2 list-disc space-y-1 pl-5 text-sm text-red-700"></ul>
+        </div>
+
+        <form id="loginForm" class="mt-4 space-y-4" novalidate>
+          <div>
+            <label for="email" class="block text-sm font-medium text-slate-800">Email</label>
+            <input
+              id="email"
+              name="email"
+              type="email"
+              autocomplete="email"
+              aria-describedby="emailHint emailError"
+              aria-invalid="false"
+              class="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500"
+              placeholder="you@example.com"
+            />
+            <p id="emailHint" class="mt-1 text-xs text-slate-500">Use a valid email address format.</p>
+            <p id="emailError" class="mt-1 hidden text-xs font-medium text-red-700"></p>
+          </div>
+
+          <div>
+            <label for="password" class="block text-sm font-medium text-slate-800">Password</label>
+            <input
+              id="password"
+              name="password"
+              type="password"
+              autocomplete="current-password"
+              aria-describedby="passwordHint passwordError"
+              aria-invalid="false"
+              class="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500"
+              placeholder="At least 8 characters"
+            />
+            <p id="passwordHint" class="mt-1 text-xs text-slate-500">Must be 8 or more characters.</p>
+            <p id="passwordError" class="mt-1 hidden text-xs font-medium text-red-700"></p>
+          </div>
+
+          <button
+            type="submit"
+            class="w-full rounded-lg bg-brand-700 px-4 py-2.5 text-sm font-semibold text-white shadow-md shadow-brand-700/25 transition hover:bg-brand-900 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-2"
+          >
+            Save Credentials
+          </button>
+        </form>
+      </section>
+    </main>
+
+    <div id="confirmModal" class="fixed inset-0 z-30 hidden" role="dialog" aria-modal="true" aria-labelledby="confirmTitle" aria-hidden="true">
+      <div class="absolute inset-0 bg-slate-900/60"></div>
+      <div class="relative mx-auto mt-24 w-[92%] max-w-sm rounded-xl bg-white p-5 shadow-2xl sm:mt-28">
+        <h2 id="confirmTitle" class="font-display text-xl font-bold text-slate-900">Saved</h2>
+        <p class="mt-2 text-sm text-slate-600">Your credentials were saved successfully.</p>
+        <div class="mt-5 flex flex-col gap-2 sm:flex-row sm:justify-end">
+          <button
+            id="cancelBtn"
+            type="button"
+            class="rounded-lg border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-2"
+          >
+            Cancel
+          </button>
+          <button
+            id="okBtn"
+            type="button"
+            class="rounded-lg bg-brand-700 px-4 py-2 text-sm font-semibold text-white transition hover:bg-brand-900 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-2"
+          >
+            OK
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const loginForm = document.getElementById("loginForm");
+      const formSummary = document.getElementById("formSummary");
+      const summaryList = document.getElementById("summaryList");
+      const emailInput = document.getElementById("email");
+      const passwordInput = document.getElementById("password");
+      const emailError = document.getElementById("emailError");
+      const passwordError = document.getElementById("passwordError");
+      const confirmModal = document.getElementById("confirmModal");
+      const okBtn = document.getElementById("okBtn");
+      const cancelBtn = document.getElementById("cancelBtn");
+
+      function clearFieldError(inputEl, errorEl) {
+        inputEl.setAttribute("aria-invalid", "false");
+        errorEl.textContent = "";
+        errorEl.classList.add("hidden");
+      }
+
+      function setFieldError(inputEl, errorEl, message) {
+        inputEl.setAttribute("aria-invalid", "true");
+        errorEl.textContent = message;
+        errorEl.classList.remove("hidden");
+      }
+
+      function clearSummary() {
+        formSummary.classList.add("hidden");
+        summaryList.innerHTML = "";
+      }
+
+      function validateForm() {
+        const errors = [];
+        const emailValue = emailInput.value.trim();
+        const passwordValue = passwordInput.value;
+
+        clearFieldError(emailInput, emailError);
+        clearFieldError(passwordInput, passwordError);
+
+        if (!emailValue) {
+          setFieldError(emailInput, emailError, "Email is required.");
+          errors.push({ field: "email", message: "Email is required." });
+        } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailValue)) {
+          setFieldError(emailInput, emailError, "Enter a valid email address.");
+          errors.push({ field: "email", message: "Enter a valid email address." });
+        }
+
+        if (!passwordValue) {
+          setFieldError(passwordInput, passwordError, "Password is required.");
+          errors.push({ field: "password", message: "Password is required." });
+        } else if (passwordValue.length < 8) {
+          setFieldError(passwordInput, passwordError, "Password must be at least 8 characters.");
+          errors.push({ field: "password", message: "Password must be at least 8 characters." });
+        }
+
+        return { errors, emailValue };
+      }
+
+      function showSummary(errors) {
+        summaryList.innerHTML = "";
+
+        errors.forEach((item) => {
+          const li = document.createElement("li");
+          const link = document.createElement("a");
+          link.href = `#${item.field}`;
+          link.textContent = item.message;
+          link.className = "underline font-medium";
+          link.dataset.field = item.field;
+          li.appendChild(link);
+          summaryList.appendChild(li);
+        });
+
+        formSummary.classList.remove("hidden");
+        formSummary.focus();
+      }
+
+      function showModal(modalEl) {
+        modalEl.classList.remove("hidden");
+        modalEl.setAttribute("aria-hidden", "false");
+      }
+
+      function goHomeWithProfile() {
+        window.location.href = "index.html";
+      }
+
+      loginForm.addEventListener("submit", (event) => {
+        event.preventDefault();
+        clearSummary();
+
+        const { errors, emailValue } = validateForm();
+
+        if (errors.length > 0) {
+          showSummary(errors);
+          return;
+        }
+
+        localStorage.setItem("profileEmail", emailValue);
+        showModal(confirmModal);
+        okBtn.focus();
+      });
+
+      formSummary.addEventListener("click", (event) => {
+        const target = event.target;
+        if (!(target instanceof HTMLAnchorElement)) {
+          return;
+        }
+
+        event.preventDefault();
+        const field = document.getElementById(target.dataset.field);
+        if (field) {
+          field.focus();
+        }
+      });
+
+      okBtn.addEventListener("click", goHomeWithProfile);
+      cancelBtn.addEventListener("click", goHomeWithProfile);
+    </script>
+  </body>
+</html>
