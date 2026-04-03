@@ -1,0 +1,643 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Accessible Multi-Step Form</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&family=Fraunces:opsz,wght@9..144,600&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body class="min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-teal-50 px-4 py-6 text-slate-900 [font-family:Manrope,sans-serif] sm:px-6 sm:py-10">
+    <main class="mx-auto w-full max-w-3xl">
+      <section class="rounded-3xl border border-teal-900/10 bg-white/90 p-5 shadow-xl shadow-amber-100/70 backdrop-blur sm:p-8">
+        <header class="space-y-3">
+          <p class="inline-flex items-center rounded-full bg-amber-100 px-3 py-1 text-xs font-bold tracking-wide text-amber-900">
+            Registration Flow
+          </p>
+          <h1 class="text-3xl leading-tight font-semibold text-slate-900 [font-family:Fraunces,serif] sm:text-4xl">Create Your Account</h1>
+          <p class="text-sm text-slate-700 sm:text-base">
+            Complete each step. Required fields are validated as you move forward. Final submission includes a full error summary with links.
+          </p>
+        </header>
+
+        <section class="mt-6" aria-label="Progress">
+          <div class="mb-2 flex items-center justify-between text-sm font-medium text-slate-700">
+            <p id="progress-label" aria-live="polite">Step 1 of 4</p>
+            <p id="progress-percent" aria-hidden="true">25%</p>
+          </div>
+          <div class="h-3 w-full overflow-hidden rounded-full bg-slate-200" role="progressbar" aria-valuemin="1" aria-valuemax="4" aria-valuenow="1" aria-labelledby="progress-label" id="progressbar-root">
+            <div id="progress-fill" class="h-full w-1/4 rounded-full bg-gradient-to-r from-teal-600 to-emerald-500 transition-all duration-300"></div>
+          </div>
+        </section>
+
+        <section
+          id="error-summary"
+          class="mt-6 hidden rounded-xl border border-red-300 bg-red-50 p-4"
+          role="alert"
+          aria-live="assertive"
+          tabindex="-1"
+        >
+          <h2 class="text-lg font-semibold text-red-900 [font-family:Fraunces,serif]">Please fix the following errors:</h2>
+          <ul id="error-summary-list" class="mt-2 list-disc space-y-1 pl-5 text-sm text-red-900"></ul>
+        </section>
+
+        <form id="multi-step-form" class="mt-6 space-y-8" novalidate>
+          <fieldset id="step-1" data-step="1" class="space-y-4">
+            <legend class="text-2xl font-semibold text-slate-900 [font-family:Fraunces,serif]">1. Personal Information</legend>
+
+            <div class="space-y-2">
+              <label for="firstName" class="text-sm font-semibold text-slate-800">First Name</label>
+              <input
+                id="firstName"
+                name="firstName"
+                type="text"
+                autocomplete="given-name"
+                data-label="First Name"
+                data-required="true"
+                class="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-base focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700"
+                aria-describedby="firstName-hint firstName-error"
+                aria-invalid="false"
+              />
+              <p id="firstName-hint" class="text-xs text-slate-600">Enter your legal first name.</p>
+              <p id="firstName-error" class="hidden text-sm font-medium text-red-700"></p>
+            </div>
+
+            <div class="space-y-2">
+              <label for="lastName" class="text-sm font-semibold text-slate-800">Last Name</label>
+              <input
+                id="lastName"
+                name="lastName"
+                type="text"
+                autocomplete="family-name"
+                data-label="Last Name"
+                data-required="true"
+                class="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-base focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700"
+                aria-describedby="lastName-hint lastName-error"
+                aria-invalid="false"
+              />
+              <p id="lastName-hint" class="text-xs text-slate-600">Enter your legal last name.</p>
+              <p id="lastName-error" class="hidden text-sm font-medium text-red-700"></p>
+            </div>
+
+            <div class="space-y-2">
+              <label for="dob" class="text-sm font-semibold text-slate-800">Date of Birth</label>
+              <input
+                id="dob"
+                name="dob"
+                type="date"
+                autocomplete="bday"
+                data-label="Date of Birth"
+                data-required="true"
+                class="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-base focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700"
+                aria-describedby="dob-hint dob-error"
+                aria-invalid="false"
+              />
+              <p id="dob-hint" class="text-xs text-slate-600">You must be at least 13 years old.</p>
+              <p id="dob-error" class="hidden text-sm font-medium text-red-700"></p>
+            </div>
+
+            <div class="pt-2">
+              <button type="button" data-next class="w-full rounded-xl bg-teal-700 px-4 py-3 text-base font-semibold text-white transition hover:bg-teal-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700">
+                Next
+              </button>
+            </div>
+          </fieldset>
+
+          <fieldset id="step-2" data-step="2" class="hidden space-y-4">
+            <legend class="text-2xl font-semibold text-slate-900 [font-family:Fraunces,serif]">2. Contact Details</legend>
+
+            <div class="space-y-2">
+              <label for="email" class="text-sm font-semibold text-slate-800">Email</label>
+              <input
+                id="email"
+                name="email"
+                type="email"
+                autocomplete="email"
+                data-label="Email"
+                data-required="true"
+                class="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-base focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700"
+                aria-describedby="email-hint email-error"
+                aria-invalid="false"
+              />
+              <p id="email-hint" class="text-xs text-slate-600">Use a valid email like name@example.com.</p>
+              <p id="email-error" class="hidden text-sm font-medium text-red-700"></p>
+            </div>
+
+            <div class="space-y-2">
+              <label for="phone" class="text-sm font-semibold text-slate-800">Phone</label>
+              <input
+                id="phone"
+                name="phone"
+                type="tel"
+                autocomplete="tel"
+                data-label="Phone"
+                data-required="true"
+                class="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-base focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700"
+                aria-describedby="phone-hint phone-error"
+                aria-invalid="false"
+              />
+              <p id="phone-hint" class="text-xs text-slate-600">Include country code if needed.</p>
+              <p id="phone-error" class="hidden text-sm font-medium text-red-700"></p>
+            </div>
+
+            <div class="space-y-2">
+              <label for="address" class="text-sm font-semibold text-slate-800">Address</label>
+              <input
+                id="address"
+                name="address"
+                type="text"
+                autocomplete="street-address"
+                data-label="Address"
+                data-required="true"
+                class="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-base focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700"
+                aria-describedby="address-hint address-error"
+                aria-invalid="false"
+              />
+              <p id="address-hint" class="text-xs text-slate-600">Street and house/apartment number.</p>
+              <p id="address-error" class="hidden text-sm font-medium text-red-700"></p>
+            </div>
+
+            <div id="city-container" class="hidden space-y-2">
+              <label for="city" class="text-sm font-semibold text-slate-800">City</label>
+              <select
+                id="city"
+                name="city"
+                autocomplete="address-level2"
+                data-label="City"
+                data-required="false"
+                disabled
+                class="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-base focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700"
+                aria-describedby="city-hint city-error"
+                aria-invalid="false"
+              >
+                <option value="">Select a city in Pennsylvania</option>
+                <option value="Philadelphia">Philadelphia</option>
+                <option value="Pittsburgh">Pittsburgh</option>
+                <option value="Allentown">Allentown</option>
+                <option value="Erie">Erie</option>
+                <option value="Reading">Reading</option>
+              </select>
+              <p id="city-hint" class="text-xs text-slate-600">City appears after entering your address.</p>
+              <p id="city-error" class="hidden text-sm font-medium text-red-700"></p>
+            </div>
+
+            <div class="grid grid-cols-1 gap-3 pt-2 sm:grid-cols-2">
+              <button type="button" data-prev class="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-base font-semibold text-slate-900 transition hover:bg-slate-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700">
+                Previous
+              </button>
+              <button type="button" data-next class="w-full rounded-xl bg-teal-700 px-4 py-3 text-base font-semibold text-white transition hover:bg-teal-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700">
+                Next
+              </button>
+            </div>
+          </fieldset>
+
+          <fieldset id="step-3" data-step="3" class="hidden space-y-4">
+            <legend class="text-2xl font-semibold text-slate-900 [font-family:Fraunces,serif]">3. Account Setup</legend>
+
+            <div class="space-y-2">
+              <label for="username" class="text-sm font-semibold text-slate-800">Username</label>
+              <input
+                id="username"
+                name="username"
+                type="text"
+                autocomplete="username"
+                data-label="Username"
+                data-required="true"
+                class="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-base focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700"
+                aria-describedby="username-hint username-error"
+                aria-invalid="false"
+              />
+              <p id="username-hint" class="text-xs text-slate-600">Use 3-20 letters, numbers, or underscores.</p>
+              <p id="username-error" class="hidden text-sm font-medium text-red-700"></p>
+            </div>
+
+            <div class="space-y-2">
+              <label for="password" class="text-sm font-semibold text-slate-800">Password</label>
+              <input
+                id="password"
+                name="password"
+                type="password"
+                autocomplete="new-password"
+                data-label="Password"
+                data-required="true"
+                class="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-base focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700"
+                aria-describedby="password-hint password-error"
+                aria-invalid="false"
+              />
+              <p id="password-hint" class="text-xs text-slate-600">Must be at least 8 characters.</p>
+              <p id="password-error" class="hidden text-sm font-medium text-red-700"></p>
+            </div>
+
+            <div class="space-y-2">
+              <label for="confirmPassword" class="text-sm font-semibold text-slate-800">Confirm Password</label>
+              <input
+                id="confirmPassword"
+                name="confirmPassword"
+                type="password"
+                autocomplete="new-password"
+                data-label="Confirm Password"
+                data-required="true"
+                class="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-base focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700"
+                aria-describedby="confirmPassword-hint confirmPassword-error"
+                aria-invalid="false"
+              />
+              <p id="confirmPassword-hint" class="text-xs text-slate-600">Re-enter your password exactly.</p>
+              <p id="confirmPassword-error" class="hidden text-sm font-medium text-red-700"></p>
+            </div>
+
+            <div class="grid grid-cols-1 gap-3 pt-2 sm:grid-cols-2">
+              <button type="button" data-prev class="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-base font-semibold text-slate-900 transition hover:bg-slate-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700">
+                Previous
+              </button>
+              <button type="button" data-next class="w-full rounded-xl bg-teal-700 px-4 py-3 text-base font-semibold text-white transition hover:bg-teal-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700">
+                Next
+              </button>
+            </div>
+          </fieldset>
+
+          <fieldset id="step-4" data-step="4" class="hidden space-y-4">
+            <legend class="text-2xl font-semibold text-slate-900 [font-family:Fraunces,serif]">4. Review and Confirm</legend>
+            <p class="text-sm text-slate-700">Review your entries below. Use any Edit button to jump to that field and update it.</p>
+
+            <dl id="review-list" class="space-y-3 rounded-2xl border border-slate-200 bg-slate-50 p-4"></dl>
+
+            <div class="grid grid-cols-1 gap-3 pt-2 sm:grid-cols-2">
+              <button type="button" data-prev class="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-base font-semibold text-slate-900 transition hover:bg-slate-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700">
+                Previous
+              </button>
+              <button type="submit" class="w-full rounded-xl bg-emerald-700 px-4 py-3 text-base font-semibold text-white transition hover:bg-emerald-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700">
+                Confirm and Submit
+              </button>
+            </div>
+          </fieldset>
+        </form>
+
+        <section id="success-message" class="mt-6 hidden rounded-xl border border-emerald-300 bg-emerald-50 p-4" tabindex="-1" aria-live="polite">
+          <h2 class="text-lg font-semibold text-emerald-900 [font-family:Fraunces,serif]">Submitted successfully</h2>
+          <p class="mt-1 text-sm text-emerald-900">Your multi-step form was validated and submitted.</p>
+        </section>
+
+        <section class="mt-8 rounded-2xl border border-teal-900/10 bg-teal-50/70 p-4">
+          <h2 class="text-xl font-semibold text-teal-900 [font-family:Fraunces,serif]">Screen Reader Testing Checklist</h2>
+          <ul class="mt-2 list-disc space-y-1 pl-5 text-sm text-teal-900">
+            <li>Navigate with keyboard and verify focus moves to each step heading on Next/Previous.</li>
+            <li>Trigger an error and confirm the field is announced as invalid with associated error text.</li>
+            <li>Attempt final submit with errors and confirm the error summary is announced and link targets receive focus.</li>
+          </ul>
+        </section>
+      </section>
+    </main>
+
+    <script>
+      (() => {
+        const totalSteps = 4;
+        let currentStep = 1;
+
+        const form = document.getElementById('multi-step-form');
+        const stepPanels = Array.from(document.querySelectorAll('[data-step]'));
+        const progressFill = document.getElementById('progress-fill');
+        const progressLabel = document.getElementById('progress-label');
+        const progressPercent = document.getElementById('progress-percent');
+        const progressBarRoot = document.getElementById('progressbar-root');
+
+        const errorSummary = document.getElementById('error-summary');
+        const errorSummaryList = document.getElementById('error-summary-list');
+        const successMessage = document.getElementById('success-message');
+        const reviewList = document.getElementById('review-list');
+        const addressField = document.getElementById('address');
+        const cityField = document.getElementById('city');
+        const cityContainer = document.getElementById('city-container');
+
+        const fieldConfig = {
+          firstName: { step: 1, label: 'First Name' },
+          lastName: { step: 1, label: 'Last Name' },
+          dob: { step: 1, label: 'Date of Birth' },
+          email: { step: 2, label: 'Email' },
+          phone: { step: 2, label: 'Phone' },
+          address: { step: 2, label: 'Address' },
+          city: { step: 2, label: 'City' },
+          username: { step: 3, label: 'Username' },
+          password: { step: 3, label: 'Password' },
+          confirmPassword: { step: 3, label: 'Confirm Password' }
+        };
+
+        const fields = Object.keys(fieldConfig).map((id) => document.getElementById(id));
+
+        function escapeHtml(value) {
+          return value
+            .replaceAll('&', '&amp;')
+            .replaceAll('<', '&lt;')
+            .replaceAll('>', '&gt;')
+            .replaceAll('"', '&quot;')
+            .replaceAll("'", '&#039;');
+        }
+
+        function hideSummary() {
+          errorSummary.classList.add('hidden');
+          errorSummaryList.innerHTML = '';
+        }
+
+        function showError(field, message) {
+          const errorEl = document.getElementById(`${field.id}-error`);
+          field.setAttribute('aria-invalid', 'true');
+          field.classList.add('border-red-600', 'bg-red-50');
+          errorEl.textContent = message;
+          errorEl.classList.remove('hidden');
+        }
+
+        function clearError(field) {
+          const errorEl = document.getElementById(`${field.id}-error`);
+          field.setAttribute('aria-invalid', 'false');
+          field.classList.remove('border-red-600', 'bg-red-50');
+          errorEl.textContent = '';
+          errorEl.classList.add('hidden');
+        }
+
+        function formatDate(isoDate) {
+          if (!isoDate) return '';
+          const parts = isoDate.split('-');
+          if (parts.length !== 3) return isoDate;
+          return `${parts[2]}/${parts[1]}/${parts[0]}`;
+        }
+
+        function updateCityVisibility() {
+          const hasAddress = addressField.value.trim().length > 0;
+          cityContainer.classList.toggle('hidden', !hasAddress);
+          cityField.disabled = !hasAddress;
+          cityField.dataset.required = hasAddress ? 'true' : 'false';
+
+          if (!hasAddress) {
+            cityField.value = '';
+            clearError(cityField);
+          }
+        }
+
+        function renderReview() {
+          const rows = Object.keys(fieldConfig)
+            .map((id) => {
+              const input = document.getElementById(id);
+              const rawValue = input.value.trim();
+              let displayValue = rawValue || 'Not provided';
+
+              if (id === 'password' || id === 'confirmPassword') {
+                displayValue = rawValue ? '•'.repeat(Math.min(rawValue.length, 12)) : 'Not provided';
+              }
+
+              if (id === 'dob' && rawValue) {
+                displayValue = formatDate(rawValue);
+              }
+
+              return `
+                <div class="rounded-xl border border-slate-200 bg-white p-3">
+                  <div class="flex items-start justify-between gap-3">
+                    <div>
+                      <dt class="text-xs font-semibold uppercase tracking-wide text-slate-500">${fieldConfig[id].label}</dt>
+                      <dd class="mt-1 text-sm font-medium text-slate-900 break-all">${escapeHtml(displayValue)}</dd>
+                    </div>
+                    <button
+                      type="button"
+                      class="rounded-lg border border-slate-300 px-3 py-1 text-xs font-semibold text-slate-900 hover:bg-slate-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-dashed focus-visible:outline-slate-900"
+                      data-edit-field="${id}"
+                    >
+                      Edit
+                    </button>
+                  </div>
+                </div>
+              `;
+            })
+            .join('');
+
+          reviewList.innerHTML = rows;
+        }
+
+        function updateProgress() {
+          const percentage = Math.round((currentStep / totalSteps) * 100);
+          progressFill.style.width = `${percentage}%`;
+          progressLabel.textContent = `Step ${currentStep} of ${totalSteps}`;
+          progressPercent.textContent = `${percentage}%`;
+          progressBarRoot.setAttribute('aria-valuenow', String(currentStep));
+        }
+
+        function showStep(step) {
+          currentStep = step;
+          stepPanels.forEach((panel) => {
+            const panelStep = Number(panel.dataset.step);
+            panel.classList.toggle('hidden', panelStep !== currentStep);
+          });
+
+          updateCityVisibility();
+
+          if (currentStep === 4) {
+            renderReview();
+          }
+
+          hideSummary();
+          updateProgress();
+
+          const heading = stepPanels.find((panel) => Number(panel.dataset.step) === currentStep)?.querySelector('legend');
+          if (heading) {
+            heading.setAttribute('tabindex', '-1');
+            heading.focus();
+          }
+        }
+
+        function getFieldError(field) {
+          const value = field.value.trim();
+          const id = field.id;
+
+          if (field.dataset.required === 'true' && !value) {
+            return `${fieldConfig[id].label} is required.`;
+          }
+
+          if (id === 'email' && value) {
+            const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailPattern.test(value)) {
+              return 'Email must be a valid email address.';
+            }
+          }
+
+          if (id === 'phone' && value) {
+            const phonePattern = /^[+]?[0-9\s().-]{7,20}$/;
+            if (!phonePattern.test(value)) {
+              return 'Phone must contain 7 to 20 valid phone characters.';
+            }
+          }
+
+          if (id === 'dob' && value) {
+            const date = new Date(`${value}T00:00:00`);
+            const today = new Date();
+            if (date > today) {
+              return 'Date of Birth cannot be in the future.';
+            }
+
+            const age = today.getFullYear() - date.getFullYear();
+            const monthDiff = today.getMonth() - date.getMonth();
+            const dayDiff = today.getDate() - date.getDate();
+            const adjustedAge = monthDiff < 0 || (monthDiff === 0 && dayDiff < 0) ? age - 1 : age;
+            if (adjustedAge < 13) {
+              return 'You must be at least 13 years old.';
+            }
+          }
+
+          if (id === 'username' && value) {
+            const usernamePattern = /^[A-Za-z0-9_]{3,20}$/;
+            if (!usernamePattern.test(value)) {
+              return 'Username must be 3-20 characters and only letters, numbers, or underscores.';
+            }
+          }
+
+          if (id === 'password' && value.length < 8) {
+            return 'Password must be at least 8 characters.';
+          }
+
+          if (id === 'confirmPassword') {
+            const passwordValue = document.getElementById('password').value;
+            if (value !== passwordValue) {
+              return 'Confirm Password must match Password.';
+            }
+          }
+
+          return '';
+        }
+
+        function validateField(field) {
+          const error = getFieldError(field);
+          if (error) {
+            showError(field, error);
+            return { field, message: error };
+          }
+
+          clearError(field);
+          return null;
+        }
+
+        function fieldsForStep(step) {
+          return fields.filter((field) => fieldConfig[field.id].step === step);
+        }
+
+        function validateStep(step) {
+          const errors = [];
+          fieldsForStep(step).forEach((field) => {
+            const result = validateField(field);
+            if (result) {
+              errors.push(result);
+            }
+          });
+          return errors;
+        }
+
+        function validateAll() {
+          const errors = [];
+          fields.forEach((field) => {
+            const result = validateField(field);
+            if (result) {
+              errors.push(result);
+            }
+          });
+          return errors;
+        }
+
+        function showErrorSummary(errors) {
+          errorSummaryList.innerHTML = errors
+            .map(
+              (err) =>
+                `<li><a href="#${err.field.id}" data-summary-link="${err.field.id}" class="underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-dashed focus-visible:outline-slate-900">${escapeHtml(
+                  err.message
+                )}</a></li>`
+            )
+            .join('');
+
+          errorSummary.classList.remove('hidden');
+          errorSummary.focus();
+        }
+
+        fields.forEach((field) => {
+          field.addEventListener('input', () => {
+            if (field.id === 'address') {
+              updateCityVisibility();
+            }
+            validateField(field);
+          });
+
+          field.addEventListener('blur', () => {
+            validateField(field);
+          });
+        });
+
+        updateCityVisibility();
+
+        form.addEventListener('click', (event) => {
+          const nextButton = event.target.closest('[data-next]');
+          const prevButton = event.target.closest('[data-prev]');
+          const editButton = event.target.closest('[data-edit-field]');
+          const summaryLink = event.target.closest('[data-summary-link]');
+
+          if (summaryLink) {
+            event.preventDefault();
+            const target = document.getElementById(summaryLink.dataset.summaryLink);
+            if (target) {
+              const targetStep = fieldConfig[target.id].step;
+              showStep(targetStep);
+              target.focus();
+            }
+            return;
+          }
+
+          if (editButton) {
+            const fieldId = editButton.dataset.editField;
+            const target = document.getElementById(fieldId);
+            if (target) {
+              const targetStep = fieldConfig[fieldId].step;
+              showStep(targetStep);
+              target.focus();
+            }
+            return;
+          }
+
+          if (prevButton) {
+            if (currentStep > 1) {
+              showStep(currentStep - 1);
+            }
+            return;
+          }
+
+          if (nextButton) {
+            const errors = validateStep(currentStep);
+            if (errors.length > 0) {
+              errors[0].field.focus();
+              return;
+            }
+
+            if (currentStep < totalSteps) {
+              showStep(currentStep + 1);
+            }
+          }
+        });
+
+        form.addEventListener('submit', (event) => {
+          event.preventDefault();
+          successMessage.classList.add('hidden');
+
+          const errors = validateAll();
+          if (errors.length > 0) {
+            const firstErrorStep = fieldConfig[errors[0].field.id].step;
+            showStep(firstErrorStep);
+            showErrorSummary(errors);
+            return;
+          }
+
+          hideSummary();
+          successMessage.classList.remove('hidden');
+          successMessage.focus();
+        });
+
+        showStep(1);
+      })();
+    </script>
+  </body>
+</html>
